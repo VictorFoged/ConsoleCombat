@@ -8,7 +8,7 @@ namespace ConsoleCombat
 {
     class Map
     {
-        Map tMap;
+        
         
         int xlen = 0;
         int ylen = 0;
@@ -16,7 +16,7 @@ namespace ConsoleCombat
         public string[][] map = { };
         public ConsoleColor Background = ConsoleColor.Black;
         public ConsoleColor Foreground = ConsoleColor.White;
-        Dictionary<string, Map> maps = new Dictionary<string, Map>();
+       
 
         public string[] l1 = { "#", "#", "#", "#", "#", "#", "#", "_", "#", "#", "#", "#", "#", "#", "#" };
         public string[] l2 = { "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#" };
@@ -69,7 +69,11 @@ namespace ConsoleCombat
             Console.WriteLine("HP: " + Program.player.HP);
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("(" + Program.player.playerCord[0] + "," + Program.player.playerCord[1] + ")");
-            Console.WriteLine(World.MapList.Count);
+            Console.WriteLine(World.getList().Count);
+            foreach (Map m in World.getList())
+            {
+                Console.WriteLine(m.mapcord[0] + " " + m.mapcord[1]);
+            }
             
             Console.WriteLine("\n" + Program.dialouge);
         }
@@ -77,9 +81,11 @@ namespace ConsoleCombat
 
         {
             createMap();
+            Map tMap;
             Player player = Program.player;
             switch (map[player.playerY][player.playerX]) //Placing the player "O" 
             {
+
                 case " ":
                     map[player.playerY][player.playerX] = "O";
                     break;
@@ -91,7 +97,7 @@ namespace ConsoleCombat
                     if (player.playerX > 3)
                     {
                         player.playerCord[0] = player.playerCord[0] + 1; //Change global playerCord unique for each map.
-                        if(getMapByLoc(player.playerCord) != null)
+                        if(getMapByLoc(player.playerCord) != Program.Nulled && player.playerCord != Program.currentMap.mapcord)
                         {
                             locPlayer(); //Change currentMap to match playerCord
 
@@ -111,7 +117,7 @@ namespace ConsoleCombat
                         }
                         else
                         {
-                            World.MapList.Add(new Map(player.playerCord));
+                            World.addMapToList(new Map(player.playerCord));
                             tMap = getMapByLoc(player.playerCord);
                             tMap.ranGen();
                             locPlayer(); //Change currentMap to match playerCord
@@ -136,7 +142,7 @@ namespace ConsoleCombat
                     else
                     {
                         player.playerCord[0] = player.playerCord[0] - 1; //Change global playerCord unique for each map.
-                        if (getMapByLoc(player.playerCord) != null)
+                        if (getMapByLoc(player.playerCord) != Program.Nulled && player.playerCord != Program.currentMap.mapcord)
                         {
                             locPlayer(); //Change currentMap to match playerCord
 
@@ -156,7 +162,7 @@ namespace ConsoleCombat
                         }
                         else
                         {
-                            World.MapList.Add(new Map(player.playerCord));
+                            World.addMapToList(new Map(player.playerCord));
                             tMap = getMapByLoc(player.playerCord);
                             tMap.ranGen();
                             locPlayer(); //Change currentMap to match playerCord
@@ -183,7 +189,7 @@ namespace ConsoleCombat
                     if (player.playerY > 3)
                     {
                         player.playerCord[1] = player.playerCord[1] - 1; //Change global playerCord unique for each map.
-                        if (getMapByLoc(player.playerCord) != null)
+                        if (getMapByLoc(player.playerCord) != Program.Nulled && player.playerCord != Program.currentMap.mapcord)
                         {
                             locPlayer(); //Change currentMap to match playerCord
 
@@ -203,7 +209,7 @@ namespace ConsoleCombat
                         }
                         else
                         {
-                            World.MapList.Add(new Map(player.playerCord));
+                            World.addMapToList(new Map(player.playerCord));
                             tMap = getMapByLoc(player.playerCord);
                             tMap.ranGen();
 
@@ -228,7 +234,7 @@ namespace ConsoleCombat
                     else
                     {
                         player.playerCord[1] = player.playerCord[1] + 1; //Change global playerCord unique for each map.
-                        if (getMapByLoc(player.playerCord) != null)
+                        if (getMapByLoc(player.playerCord) != Program.Nulled && player.playerCord != Program.currentMap.mapcord)
                         {
                             locPlayer(); //Change currentMap to match playerCord
 
@@ -248,12 +254,15 @@ namespace ConsoleCombat
                         }
                         else
                         {
-                            World.MapList.Add(new Map(player.playerCord));
-                            tMap = getMapByLoc(player.playerCord);
-                            tMap.ranGen();
-
+                            Map gMap = new Map(player.playerCord);
+                            gMap.ranGen();
+                            World.addMapToList(gMap);
+                            
+                         //   tMap = getMapByLoc(player.playerCord);
+                          //  tMap.ranGen();
+                            
                             locPlayer(); //Change currentMap to match playerCord
-
+                            
                             //Arrival Cords on fixed 15x11 grid
                             player.playerX = 7;
                             player.playerY = 9;
@@ -296,15 +305,15 @@ namespace ConsoleCombat
         }
         public Map getMapByLoc(int[] cord)
         {
-            foreach (Map i in World.MapList) //Search for map with certain coordinates
+            foreach (Map i in World.getList()) //Search for map with certain coordinates
             {
 
-                if (i.mapcord[0] == cord[0] & i.mapcord[1] == cord[1])
+                if (i.mapcord[0] == cord[0] && i.mapcord[1] == cord[1])
                 {
                     return i;
                 }
             }
-            return null; //Wont be needed unless I fuck up
+            return Program.Nulled; //Wont be needed unless I fuck up
 
         }
         public void clearDia()

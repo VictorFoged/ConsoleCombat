@@ -10,13 +10,14 @@ namespace ConsoleCombat
     {
         public static Player player = new Player();
         public static Map Town = new Map();
-        
+        public static Map Nulled = new Map();
         public static Map Town1 = new Map(new int[] { 1, 0 });
         public static Map currentMap = Town;
         public static string dialouge = "";
         static void Main(string[] args)
         {
-            World.MapList.Add(Town);
+            World.addMapToList(Town1);
+            World.addMapToList(Town);
             while(1 < 2)
             {
                 currentMap.genMap(currentMap.map);

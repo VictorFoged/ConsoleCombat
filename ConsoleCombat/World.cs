@@ -8,6 +8,18 @@ namespace ConsoleCombat
 {
     class World
     {
-        public static List<Map> MapList = new List<Map>();
+        private static List<Map> MapList = new List<Map>();
+
+        public static void addMapToList(Map m)
+        {
+            MapList.Add(m);
+        }
+
+        public static List<Map> getList()
+        {
+            return MapList;
+        }
+
+
     }
 }
